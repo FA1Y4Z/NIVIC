@@ -1,21 +1,15 @@
-import java.sql.Connection;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        try {
+        Scanner scanner = new Scanner(System.in);
 
-            Connection conexao = Conexao.conectar();
+        Controller controller = new Controller(scanner);
 
-            System.out.println("Banco conectado!");
+        controller.iniciar();
 
-            conexao.close();
-
-        } catch (Exception e) {
-
-            System.out.println("Erro ao conectar com o banco!");
-            e.printStackTrace();
-        }
+        scanner.close();
     }
 }

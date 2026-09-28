@@ -5,8 +5,8 @@ import java.sql.SQLException;
 public class Conexao {
 
     private static final String URL = "jdbc:mariadb://localhost:3306/nivic";
-    private static final String USUARIO = "root";
-    private static final String SENHA = "";
+    private static final String USUARIO = "nivic";
+    private static final String SENHA = "nivic123";
 
     public static Connection conectar() throws SQLException {
 

@@ -11,8 +11,10 @@ public class Controller {
     private ArrayList<Receita> receitas;
     private ArrayList<Despesa> despesas;
 
-    public Controller(Scanner scanner) {
 
+    private UsuarioDAO usuarioDAO;
+    public Controller(Scanner scanner) {
+        usuarioDAO = new UsuarioDAO();
         this.scanner = scanner;
         this.menu = new Menu(scanner);
         this.calculo = new Calculo();
@@ -70,6 +72,10 @@ public class Controller {
                     break;
 
                 case 6:
+                    usuarioDAO.listar();
+                    break;
+
+                case 7:
                     verSaldo();
                     break;
 
@@ -109,7 +115,7 @@ public class Controller {
         );
 
         usuarios.add(usuario);
-
+        usuarioDAO.cadastrar(usuario);
         System.out.println("\nUsuário cadastrado com sucesso!");
         System.out.println("ID: " + usuario.getId());
     }

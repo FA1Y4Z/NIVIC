@@ -18,7 +18,8 @@ public class Menu {
         System.out.println("3 - Cadastrar despesa");
         System.out.println("4 - Listar receitas");
         System.out.println("5 - Listar despesas");
-        System.out.println("6 - Ver saldo");
+        System.out.println("6 - Listar usuários");
+        System.out.println("7 - Ver saldo");
         System.out.println("0 - Sair");
         System.out.println("============================");
 
