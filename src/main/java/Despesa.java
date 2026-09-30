@@ -6,7 +6,13 @@ public class Despesa {
     private String categoria;
     private String data;
 
-    public Despesa(int id, String descricao, double valor, String categoria, String data) {
+    public Despesa(
+            int id,
+            String descricao,
+            double valor,
+            String categoria,
+            String data
+    ) {
         this.id = id;
         this.descricao = descricao;
         this.valor = valor;
@@ -32,6 +38,10 @@ public class Despesa {
 
     public String getData() {
         return data;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setDescricao(String descricao) {

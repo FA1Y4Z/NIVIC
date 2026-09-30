@@ -2,7 +2,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.sql.Statement;
 public class UsuarioDAO {
 
     public void cadastrar(Usuario usuario) {
@@ -13,7 +13,10 @@ public class UsuarioDAO {
                 """;
 
         try (Connection conexao = Conexao.conectar();
-             PreparedStatement comando = conexao.prepareStatement(sql)) {
+             PreparedStatement comando = conexao.prepareStatement(
+                     sql,
+                     Statement.RETURN_GENERATED_KEYS
+             )) {
 
             comando.setString(1, usuario.getNome());
             comando.setString(2, usuario.getEmail());
@@ -21,8 +24,14 @@ public class UsuarioDAO {
 
             comando.executeUpdate();
 
-            System.out.println("Usuário salvo no banco!");
+            ResultSet resultado = comando.getGeneratedKeys();
 
+            if (resultado.next()) {
+                int id = resultado.getInt(1);
+                usuario.setId(id);
+            }
+
+            System.out.println("Usuário salvo no banco!");
         } catch (SQLException e) {
 
             System.out.println("Erro ao cadastrar usuário no banco!");

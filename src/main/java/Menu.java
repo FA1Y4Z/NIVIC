@@ -8,26 +8,40 @@ public class Menu {
         this.scanner = scanner;
     }
 
-    public int mostrarMenu() {
+    public int mostrarMenuInicial() {
 
         System.out.println("\n============================");
         System.out.println("           NIVIC");
         System.out.println("============================");
-        System.out.println("1 - Cadastrar usuário");
-        System.out.println("2 - Cadastrar receita");
-        System.out.println("3 - Cadastrar despesa");
-        System.out.println("4 - Listar receitas");
-        System.out.println("5 - Listar despesas");
-        System.out.println("6 - Listar usuários");
-        System.out.println("7 - Ver saldo");
+        System.out.println("1 - Login");
+        System.out.println("2 - Cadastrar usuário");
         System.out.println("0 - Sair");
         System.out.println("============================");
 
         System.out.print("Escolha: ");
 
-        int opcao = scanner.nextInt();
-        scanner.nextLine();
+        return scanner.nextInt();
+    }
 
-        return opcao;
+    public int mostrarMenuUsuario(Usuario usuario) {
+
+        System.out.println("\n============================");
+        System.out.println("           NIVIC");
+        System.out.println("============================");
+        System.out.println("Usuário: " + usuario.getNome());
+        System.out.println("============================");
+        System.out.println("1 - Cadastrar receita");
+        System.out.println("2 - Cadastrar despesa");
+        System.out.println("3 - Listar receitas");
+        System.out.println("4 - Listar despesas");
+        System.out.println("5 - Ver saldo");
+        System.out.println("6 - Listar usuários");
+        System.out.println("7 - Logout");
+        System.out.println("0 - Sair");
+        System.out.println("============================");
+
+        System.out.print("Escolha: ");
+
+        return scanner.nextInt();
     }
 }

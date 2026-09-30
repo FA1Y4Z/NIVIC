@@ -5,8 +5,8 @@ public class Usuario {
     private String email;
     private String senha;
 
-    public Usuario(int id, String nome, String email, String senha) {
-        this.id = id;
+    public Usuario(String nome, String email, String senha) {
+
         this.nome = nome;
         this.email = email;
         this.senha = senha;
@@ -38,6 +38,10 @@ public class Usuario {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
 }

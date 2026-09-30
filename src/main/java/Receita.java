@@ -6,8 +6,7 @@ public class Receita {
     private String tipo;
     private String data;
 
-    public Receita(int id, String descricao, double valor, String tipo, String data) {
-        this.id = id;
+    public Receita( String descricao, double valor, String tipo, String data) {
         this.descricao = descricao;
         this.valor = valor;
         this.tipo = tipo;
@@ -48,5 +47,8 @@ public class Receita {
 
     public void setData(String data) {
         this.data = data;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 }

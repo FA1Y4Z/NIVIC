@@ -8,89 +8,142 @@ public class Controller {
     private Calculo calculo;
 
     private ArrayList<Usuario> usuarios;
-    private ArrayList<Receita> receitas;
-    private ArrayList<Despesa> despesas;
-
 
     private UsuarioDAO usuarioDAO;
+    private ReceitaDAO receitaDAO;
+    private DespesaDAO despesaDAO;
+    private LoginDAO loginDAO;
+
+    private Usuario usuarioAtual;
+
     public Controller(Scanner scanner) {
+
         usuarioDAO = new UsuarioDAO();
+        receitaDAO = new ReceitaDAO();
+        despesaDAO = new DespesaDAO();
+        loginDAO = new LoginDAO();
+
         this.scanner = scanner;
         this.menu = new Menu(scanner);
         this.calculo = new Calculo();
 
         usuarios = new ArrayList<>();
-        receitas = new ArrayList<>();
-        despesas = new ArrayList<>();
     }
 
     public void iniciar() {
 
-        int opcao;
+        boolean executando = true;
 
-        do {
+        while (executando) {
 
-            opcao = menu.mostrarMenu();
+            if (usuarioAtual == null) {
 
-            switch (opcao) {
+                int opcao = menu.mostrarMenuInicial();
 
-                case 1:
-                    cadastrarUsuario();
-                    break;
+                switch (opcao) {
 
-                case 2:
-                    if (usuarios.isEmpty()) {
-                        System.out.println("cadastre o usuario");
-                    } else {
+                    case 1:
+                        fazerLogin();
+                        break;
+
+                    case 2:
+                        cadastrarUsuario();
+                        break;
+
+                    case 0:
+                        executando = false;
+                        System.out.println("\nSaindo do NIVIC...");
+                        break;
+
+                    default:
+                        System.out.println("\nOpção inválida!");
+                }
+
+            } else {
+
+                int opcao = menu.mostrarMenuUsuario(usuarioAtual);
+
+                switch (opcao) {
+
+                    case 1:
                         cadastrarReceita();
-                    }
-                    break;
+                        break;
 
-                case 3:
-                    if (usuarios.isEmpty()) {
-                        System.out.println("cadastre o usuario");
-                    } else {
+                    case 2:
                         cadastrarDespesa();
-                    }
-                    break;
+                        break;
 
-                case 4:
-                    if (receitas.isEmpty()) {
-                        System.out.println("Nao ha receitas cadastradas");
-                    } else {
+                    case 3:
                         listarReceitas();
-                    }
+                        break;
 
-                    break;
-
-                case 5:
-                    if (despesas.isEmpty()) {
-                        System.out.println("Nao ha despesas cadastradas");
-                    } else {
+                    case 4:
                         listarDespesas();
-                    }
-                    break;
+                        break;
 
-                case 6:
-                    usuarioDAO.listar();
-                    break;
+                    case 5:
+                        verSaldo();
+                        break;
 
-                case 7:
-                    verSaldo();
-                    break;
+                    case 6:
+                        usuarioDAO.listar();
+                        break;
 
-                case 0:
-                    System.out.println("\nSaindo do Nico...");
-                    break;
+                    case 7:
+                        fazerLogout();
+                        break;
 
-                default:
-                    System.out.println("\nOpção inválida!");
+                    case 0:
+                        executando = false;
+                        System.out.println("\nSaindo do NIVIC...");
+                        break;
+
+                    default:
+                        System.out.println("\nOpção inválida!");
+                }
             }
+        }
+    }
 
-        } while (opcao != 0);
+    private void fazerLogin() {
+
+        scanner.nextLine();
+
+        System.out.println("\n============================");
+        System.out.println("            LOGIN");
+        System.out.println("============================");
+
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+
+        System.out.print("Senha: ");
+        String senha = scanner.nextLine();
+
+        Usuario usuario = loginDAO.autenticar(email, senha);
+
+        if (usuario != null) {
+
+            usuarioAtual = usuario;
+
+            System.out.println("\nLogin realizado com sucesso!");
+            System.out.println("Bem-vindo, " + usuario.getNome() + "!");
+
+        } else {
+
+            System.out.println("\nEmail ou senha incorretos.");
+        }
+    }
+
+    private void fazerLogout() {
+
+        usuarioAtual = null;
+
+        System.out.println("\nLogout realizado com sucesso!");
     }
 
     private void cadastrarUsuario() {
+
+        scanner.nextLine();
 
         System.out.println("\n============================");
         System.out.println("      CADASTRAR USUÁRIO");
@@ -105,26 +158,30 @@ public class Controller {
         System.out.print("Senha: ");
         String senha = scanner.nextLine();
 
-        int id = usuarios.size() + 1;
-
         Usuario usuario = new Usuario(
-                id,
                 nome,
                 email,
                 senha
         );
 
-        usuarios.add(usuario);
         usuarioDAO.cadastrar(usuario);
+
+        usuarios.add(usuario);
+
         System.out.println("\nUsuário cadastrado com sucesso!");
         System.out.println("ID: " + usuario.getId());
+
+        System.out.println("\nAgora você pode fazer login.");
     }
 
     private void cadastrarReceita() {
 
+        scanner.nextLine();
+
         System.out.println("\n============================");
         System.out.println("       CADASTRAR RECEITA");
         System.out.println("============================");
+
         System.out.print("Descrição: ");
         String descricao = scanner.nextLine();
 
@@ -138,22 +195,32 @@ public class Controller {
         System.out.print("Data: ");
         String data = scanner.nextLine();
 
-        int id = receitas.size() + 1;
-
         Receita receita = new Receita(
-                id,
                 descricao,
                 valor,
                 tipo,
                 data
         );
 
-        receitas.add(receita);
+        boolean cadastrou = receitaDAO.cadastrar(
+                receita,
+                usuarioAtual.getId()
+        );
 
-        System.out.println("\nReceita cadastrada com sucesso!");
+        if (cadastrou) {
+
+            System.out.println("\nReceita cadastrada com sucesso!");
+            System.out.println("ID: " + receita.getId());
+
+        } else {
+
+            System.out.println("\nNão foi possível cadastrar a receita.");
+        }
     }
 
     private void cadastrarDespesa() {
+
+        scanner.nextLine();
 
         System.out.println("\n============================");
         System.out.println("       CADASTRAR DESPESA");
@@ -172,19 +239,28 @@ public class Controller {
         System.out.print("Data: ");
         String data = scanner.nextLine();
 
-        int id = despesas.size() + 1;
-
         Despesa despesa = new Despesa(
-                id,
+                0,
                 descricao,
                 valor,
                 categoria,
                 data
         );
 
-        despesas.add(despesa);
+        boolean cadastrou = despesaDAO.cadastrar(
+                despesa,
+                usuarioAtual.getId()
+        );
 
-        System.out.println("\nDespesa cadastrada com sucesso!");
+        if (cadastrou) {
+
+            System.out.println("\nDespesa cadastrada com sucesso!");
+            System.out.println("ID: " + despesa.getId());
+
+        } else {
+
+            System.out.println("\nNão foi possível cadastrar a despesa.");
+        }
     }
 
     private void listarReceitas() {
@@ -193,19 +269,7 @@ public class Controller {
         System.out.println("          RECEITAS");
         System.out.println("============================");
 
-        if (receitas.isEmpty()) {
-            System.out.println("Nenhuma receita cadastrada.");
-            return;
-        }
-
-        for (Receita receita : receitas) {
-
-            System.out.println("\nID: " + receita.getId());
-            System.out.println("Descrição: " + receita.getDescricao());
-            System.out.println("Valor: R$ " + receita.getValor());
-            System.out.println("Tipo: " + receita.getTipo());
-            System.out.println("Data: " + receita.getData());
-        }
+        receitaDAO.listar(usuarioAtual.getId());
     }
 
     private void listarDespesas() {
@@ -214,33 +278,18 @@ public class Controller {
         System.out.println("          DESPESAS");
         System.out.println("============================");
 
-        if (despesas.isEmpty()) {
-            System.out.println("Nenhuma despesa cadastrada.");
-            return;
-        }
-
-        for (Despesa despesa : despesas) {
-
-            System.out.println("\nID: " + despesa.getId());
-            System.out.println("Descrição: " + despesa.getDescricao());
-            System.out.println("Valor: R$ " + despesa.getValor());
-            System.out.println("Categoria: " + despesa.getCategoria());
-            System.out.println("Data: " + despesa.getData());
-        }
+        despesaDAO.listar(usuarioAtual.getId());
     }
 
     private void verSaldo() {
 
-        double totalReceitas = 0;
-        double totalDespesas = 0;
+        int usuarioId = usuarioAtual.getId();
 
-        for (Receita receita : receitas) {
-            totalReceitas += receita.getValor();
-        }
+        double totalReceitas =
+                receitaDAO.calcularTotal(usuarioId);
 
-        for (Despesa despesa : despesas) {
-            totalDespesas += despesa.getValor();
-        }
+        double totalDespesas =
+                despesaDAO.calcularTotal(usuarioId);
 
         double saldo = calculo.calcularSaldo(
                 totalReceitas,
@@ -251,8 +300,19 @@ public class Controller {
         System.out.println("           SALDO");
         System.out.println("============================");
 
-        System.out.printf("Total de receitas: R$ %.2f%n", totalReceitas);
-        System.out.printf("Total de despesas: R$ %.2f%n", totalDespesas);
-        System.out.printf("Saldo atual: R$ %.2f%n", saldo);
+        System.out.printf(
+                "Total de receitas: R$ %.2f%n",
+                totalReceitas
+        );
+
+        System.out.printf(
+                "Total de despesas: R$ %.2f%n",
+                totalDespesas
+        );
+
+        System.out.printf(
+                "Saldo atual: R$ %.2f%n",
+                saldo
+        );
     }
 }
